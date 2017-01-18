@@ -1,4 +1,8 @@
-# Custom Blender OCIO config.
+# OpenColorIO configuration file for Blender
+#
+# Based on aces, nuke-default and spi configurations from OpenColorIO-Config
+#
+# See ocio-license.txt for details.
 
 ocio_profile_version: 1
 
@@ -6,227 +10,319 @@ search_path: "luts:looks"
 strictparsing: true
 luma: [0.2126, 0.7152, 0.0722]
 
-description: Project Mouse color pipeline.
+description: RRT version ut33
 
 roles:
-    default: Scene Linear
-    reference: Scene Linear
-    scene_linear: Scene Linear
-    data: Raw
-    compositing_log: Filmic Log
-    color_timing: Filmic Log
-    default_byte: sRGB
-    default_float: Scene Linear
-    default_sequencer: Scene Linear
-    color_picking: sRGB
-    texture_paint: sRGB
-    matte_paint: Filmic Log
+  default: Linear
+  reference: Linear
+  scene_linear: Linear
+  data: Raw
+  compositing_log: Linear
+  color_timing: Linear
+  default_byte: sRGB
+  default_float: Linear
+  default_sequencer: Linear
+  color_picking: Linear
+  texture_paint: Linear
+  matte_paint: Linear
 
 displays:
-#    Narrow:
-#        - !<View> {name: sRGB, colorspace: sRGB}
-#        - !<View> {name: Rec709, colorspace: sRGB}
-#        - !<View> {name: None, colorspace: Raw}
-#    Wide:
-#        - !<View> {name: Adobe RGB, colorspace: sRGB}        
-#        - !<View> {name: DCI-P3, colorspace: sRGB}
-#        - !<View> {name: Rec2020, colorspace: sRGB}
-#        - !<View> {name: XYZ, colorspace: XYZ}
-#        - !<View> {name: None, colorspace: Raw}
-    sRGB:
-        - !<View> {name: Default, colorspace: sRGB}
-        - !<View> {name: None, colorspace: Raw}
-    Rec709:
-        - !<View> {name: Default, colorspace: Rec709}
-        - !<View> {name: None, colorspace: Raw}
-#    Adobe RGB:
-#        - !<View> {name: Default, colorspace: Adobe RGB}
-#        - !<View> {name: None, colorspace: Raw}
-    XYZ:
-        - !<View> {name: Default, colorspace: XYZ}
-        - !<View> {name: None, colorspace: Raw}
-    DCI-P3:
-        - !<View> {name: Default, colorspace: DCI-P3}
-        - !<View> {name: None, colorspace: Raw}
-    Rec2020:
-        - !<View> {name: Default, colorspace: Rec2020}
-        - !<View> {name: None, colorspace: Raw}
-    ACES:
-        - !<View> {name: Default, colorspace: ACES}
-#        - !<View> {name: ACEScc, colorspace: ACEScc}
-#        - !<View> {name: ACEScg, colorspace: ACEScg}
-        - !<View> {name: None, colorspace: Raw}
-    Filmic:
-        - !<View> {name: Default, colorspace: Filmic Log}
-        - !<View> {name: None, colorspace: Raw}
-    None:
-        - !<View> {name: None, colorspace: Raw}
+  Filmic:
+    - !<View> {name: Default, colorspace: Filmic Log}
+    - !<View> {name: Filmic Very High Contrast, colorspace: Filmic Log, look: +Very High Contrast}
+    - !<View> {name: Filmic High Contrast, colorspace: Filmic Log, look: +High Contrast}
+    - !<View> {name: Filmic Medium High Contrast, colorspace: Filmic Log, look: +Medium High Contrast}
+    - !<View> {name: Filmic Very Low Contrast, colorspace: Filmic Log, look: +Very Low Contrast}
+    - !<View> {name: Filmic Medium Low Contrast, colorspace: Filmic Log, look: +Medium Low Contrast}
+    - !<View> {name: Filmic Low Contrast, colorspace: Filmic Log, look: +Low Contrast}
+    - !<View> {name: Filmic Base Contrast, colorspace: Filmic Log, look: +Base Contrast}
+    - !<View> {name: Filmic Greyscale, colorspace: Filmic Log, look: +Greyscale}
+    - !<View> {name: Filmic False Colour, colorspace: Filmic Log, look: +False Colour}
+
+    - !<View> {name: Raw, colorspace: Raw}
+
+  sRGB:
+    - !<View> {name: Default, colorspace: sRGB}
+    - !<View> {name: RRT, colorspace: rrt_srgb}
+    - !<View> {name: Raw, colorspace: Raw}
+  DCI-P3:
+    - !<View> {name: Default, colorspace: DCI-P3}
+#    - !<View> {name: RRT, colorspace: rrt_p3dci}
+    - !<View> {name: Raw, colorspace: Raw}
+  Rec709:
+    - !<View> {name: Default, colorspace: nuke_rec709}
+    - !<View> {name: RRT, colorspace: rrt_rec709}
+  Rec2020:
+    - !<View> {name: Default, colorspace: Rec2020}
+    - !<View> {name: Raw, colorspace: Raw}
+  XYZ:
+    - !<View> {name: Default, colorspace: XYZ}
+    - !<View> {name: RRT, colorspace: rrt_xyz}
+    - !<View> {name: Raw, colorspace: Raw}
+  ACES:
+    - !<View> {name: Default, colorspace: ACES}
+    - !<View> {name: Raw, colorspace: Raw}
+  None:
+    - !<View> {name: Default, colorspace: Raw}
+    - !<View> {name: Linear, colorspace: Linear}
+
+#active_displays: [Filmlike, sRGB, DCI-P3, Rec709, XYZ, None]
+#active_views: [Default, RRT, Raw, Log]
 
 colorspaces:
-    - !<ColorSpace>
-        name: Scene Linear
-        family:
-        equalitygroup:
-        bitdepth: 32f
-        description: |
-            Scene referred Rec709 linear working space.
-        isdata: false
-        allocation: lg2
-        allocationvars: [-14, 14]
+  - !<ColorSpace>
+    name: Linear
+    family: aces
+    equalitygroup:
+    bitdepth: 32f
+    description: |
+      Rec. 709 (Full Range), Blender native linear space
+    isdata: false
+    allocation: lg2
+    allocationvars: [-12.473931188, 12.526068812]
 
-    - !<ColorSpace>
-        name: Raw
-        family: raw
-        equalitygroup:
-        bitdepth: 32f
-        description: |
-            The raw, unmodified data, spit onto the screen.
-        isdata: true
-        allocation: uniform
-        allocationvars: [0, 1]
+  - !<ColorSpace>
+    name: Filmic Log
+    family:
+    equalitygroup:
+    bitdepth: 32f
+    description: |
+      Log based filmic shaper with 16.5 stops of latitude, and 25 stops of dynamic range.
+    isdata: false
+    allocation: lg2
+    allocationvars: [-12.473931188, 12.526068812]
+    from_reference: !<GroupTransform>
+        children:
+            - !<AllocationTransform> {allocation: lg2, vars: [-12.473931188, 12.526068812]}
+            - !<FileTransform> {src: desat65cube.spi3d, interpolation: best}
+            - !<AllocationTransform> {allocation: uniform, vars: [0, 0.66]}
+    to_reference: !<AllocationTransform> {allocation: lg2, vars: [-12.473931188, 4.026068812], direction: inverse}
 
-    - !<ColorSpace>
-        name: Filmic Log
-        bitdepth: 32f
-        family:
-        equalitygroup:
-        bitdepth: 32f
-        description: |
-            Log based filmic shaper with 16.5 stops of latitude, and 25 stops of dynamic range.
-        isdata: false
-        allocation: lg2
-        allocationvars: [-14, 14]
-        from_reference: !<GroupTransform>
-            children:
-                - !<AllocationTransform> {allocation: lg2, vars: [-14, 14]}
-                - !<FileTransform> {src: crosstalk.spi3d, interpolation: best}
-                - !<AllocationTransform> {allocation: uniform, vars: [0, 0.66]}
-        to_reference: !<AllocationTransform> {allocation: lg2, vars: [-14, 3.807354922], direction: inverse}
+  - !<ColorSpace>
+    name: DCI-P3
+    family: dci
+    equalitygroup: 
+    bitdepth: 32f
+    isdata: false
+    allocation: lg2
+    allocationvars: [-8.5, 6]
+    to_reference: !<FileTransform> {src: rec709--dcip3.spimtx, interpolation: linear, direction: inverse}
 
-    - !<ColorSpace>
-        name: sRGB
-        family:
-        equalitygroup:
-        bitdepth: 32f
-        description: |
-            sRGB specification display referred Electro-Optical Transfer Function.
-        isdata: false
-        allocation: uniform
-        allocationvars: [-0.125, 4.875]
-        to_reference: !<FileTransform> {src: gamma/srgb--lin.spi1d, interpolation: linear}
+  - !<ColorSpace>
+    name: Raw
+    family: raw
+    equalitygroup:
+    bitdepth: 32f
+    isdata: true
+    allocation: uniform
+    allocationvars: [0, 1]
 
-    - !<ColorSpace>
-        name: Rec709
-        family:
-        equalitygroup:
-        bitdepth: 32f
-        description: |
-            Rec.709 specification.
-        isdata: false
-        allocation: uniform
-        allocationvars: [-0.125, 1.125]
-        to_reference: !<FileTransform> {src: gamma/rec709--lin.spi1d, interpolation: linear}
+  - !<ColorSpace>
+    name: adx10
+    family: display
+    equalitygroup:
+    bitdepth: 10ui
+    description: |
+      Film Scan, using the 10-bit Academy Density Encoding
 
-    - !<ColorSpace>
-        name: Adobe RGB
-        family:
-        equalitygroup:
-        bitdepth: 32f
-        description: |
-            sRGB specification display referred Electro-Optical Transfer Function.
-        isdata: false
-        allocation: uniform
-        allocationvars: [-.125, 1.125]
-        to_reference: !<GroupTransform>
-            children:
-                - !<FileTransform> {src: gamut/rec709--argb.spimtx, interpolation: linear, direction: inverse}
-                - !<FileTransform> {src: gamma/argb--lin.spi1d, interpolation: linear}
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: adx_adx10_to_cdd.spimtx}
+        - !<FileTransform> {src: adx_cdd_to_cid.spimtx}
+        - !<FileTransform> {src: adx_cid_to_rle.spi1d, interpolation: linear}
+        - !<LogTransform> {base: 10, direction: inverse}
+        - !<FileTransform> {src: adx_exp_to_aces.spimtx}
+        - !<FileTransform> {src: rec709_to_aces.spimtx, interpolation: linear, direction: inverse}
 
-#XYZ here seems slightly different than builtin blender one. Hmm...
-    - !<ColorSpace>
-        name: XYZ
-        family: rec
-        equalitygroup: 
-        bitdepth: 32f
-        isdata: false
-        allocation: lg2
-        allocationvars: [-8.5, 6]
-        to_reference: !<FileTransform> {src: gamut/rec709--xyz.spimtx, interpolation: linear, direction: inverse}
+  - !<ColorSpace>
+    name: ACES
+    family:
+    equalitygroup:
+    bitdepth: 32f
+    description: |
+      The ACES linear colorspace.
+    isdata: false
+    allocation: lg2
+    allocationvars: [-8.5, 5]
+    to_reference: !<FileTransform> {src: rec709_to_aces.spimtx, interpolation: linear, direction: inverse}
 
-    - !<ColorSpace>
-        name: DCI-P3
-        family: dci
-        equalitygroup: 
-        bitdepth: 32f
-        isdata: false
-        allocation: lg2
-        allocationvars: [-8.5, 6]
-        to_reference: !<FileTransform> {src: gamut/rec709--dcip3.spimtx, interpolation: linear, direction: inverse}
+  - !<ColorSpace>
+    name: rrt_srgb
+    family: rrt
+    equalitygroup:
+    bitdepth: 32f
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    from_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: rec709_to_aces.spimtx, interpolation: nearest}
+        - !<AllocationTransform> {allocation: lg2, vars: [-8.5, 5]}
+        - !<FileTransform> {src: rrt_ut33_sRGB.spi3d, interpolation: tetrahedral}
 
-    - !<ColorSpace>
-        name: Rec2020
-        family: rec
-        equalitygroup: 
-        bitdepth: 32f
-        isdata: false
-        allocation: lg2
-        allocationvars: [-8.5, 6]
-        to_reference: !<FileTransform> {src: gamut/rec709--rec2020.spimtx, interpolation: linear, direction: inverse}
+  - !<ColorSpace>
+    name: nuke_rec709
+    family: display
+    equalitygroup:
+    bitdepth: 32f
+    description: |
+      Rec. 709 (Full Range) Display Space
+    isdata: false
+    allocation: uniform
+    allocationvars: [-0.125, 1.125]
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: rec709.spi1d, interpolation: linear}
 
-    - !<ColorSpace>
-        name: ACES
-        family: aces
-        equalitygroup: 
-        bitdepth: 32f
-        isdata: false
-        allocation: lg2
-        allocationvars: [-8.5, 5]
-        to_reference: !<FileTransform> {src: rec709_to_aces.spimtx, interpolation: linear, direction: inverse}
+  - !<ColorSpace>
+    name: rrt_rec709
+    family: rrt
+    equalitygroup:
+    bitdepth: 32f
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    from_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: rec709_to_aces.spimtx, interpolation: nearest}
+        - !<AllocationTransform> {allocation: lg2, vars: [-8.5, 5]}
+        - !<FileTransform> {src: rrt_ut33_rec709.spi3d, interpolation: tetrahedral}
 
+#  - !<ColorSpace>
+#    name: rrt_p3dci
+#    family: rrt
+#    equalitygroup:
+#    bitdepth: 32f
+#    isdata: false
+#    allocation: uniform
+#    allocationvars: [0, 1]
+#    from_reference: !<GroupTransform>
+#      children:
+#        - !<FileTransform> {src: rec709_to_aces.spimtx, interpolation: nearest}
+#        - !<AllocationTransform> {allocation: lg2, vars: [-8.5, 5]}
+#        - !<FileTransform> {src: rrt_ut33_p3dci.spi3d, interpolation: tetrahedral}
+
+  - !<ColorSpace>
+    name: XYZ
+    family:
+    equalitygroup:
+    bitdepth: 32f
+    isdata: false
+    allocation: lg2
+    allocationvars: [-8.5, 5]
+    from_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: rec709_to_aces.spimtx, interpolation: linear}
+        - !<FileTransform> {src: aces_to_xyz.spimtx, interpolation: linear}
+
+  - !<ColorSpace>
+    name: rrt_xyz
+    family: rrt
+    equalitygroup:
+    bitdepth: 32f
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    from_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: rec709_to_aces.spimtx, interpolation: nearest}
+        - !<AllocationTransform> {allocation: lg2, vars: [-8.5, 5]}
+        - !<FileTransform> {src: rrt_ut33_dcdm.spi3d, interpolation: tetrahedral}
+
+  - !<ColorSpace>
+    name: sRGB
+    family:
+    equalitygroup:
+    bitdepth: 32f
+    description: |
+      Standard RGB Display Space
+    isdata: false
+    allocation: uniform
+    allocationvars: [-0.125, 4.875]
+    to_reference: !<FileTransform> {src: srgb.spi1d, interpolation: linear}
+
+  - !<ColorSpace>
+    name: Non-Color
+    family: raw
+    description: |
+        Color space used for images which contains non-color data (i,e, normal maps)
+    equalitygroup:
+    bitdepth: 32f
+    isdata: true
+    allocation: uniform
+    allocationvars: [0, 1]
+
+#  - !<ColorSpace>
+#    name: p3dci8
+#    family: display
+#    equalitygroup:
+#    bitdepth: 8ui
+#    description: |
+#      p3dci8 :rgb display space for gamma 2.6 P3 projection.
+#    isdata: false
+#    allocation: uniform
+#    from_reference: !<GroupTransform>
+#      children:
+#        - !<ColorSpaceTransform> {src: Linear, dst: lg10}
+#        - !<FileTransform> {src: colorworks_filmlg_to_p3.3dl, interpolation: linear}
+
+  - !<ColorSpace>
+    name: Rec2020
+    family: rec
+    equalitygroup: 
+    bitdepth: 32f
+    isdata: false
+    allocation: lg2
+    allocationvars: [-8.5, 6]
+    to_reference: !<FileTransform> {src: rec709--rec2020.spimtx, interpolation: linear, direction: inverse}
 
 
 looks:
-    - !<Look>
-        name: False Color
-        process_space: Filmic Log
-        transform: !<FileTransform> {src: Filmic_False_Colour.spi3d, interpolation: best}
+#Filmic Blender Looks
+  - !<Look>
+    name: Greyscale
+    process_space: Filmic Log
+    transform: !<MatrixTransform> {matrix: [0.2126729, 0.7151521, 0.0721750, 0, 0.2126729, 0.7151521, 0.0721750, 0, 0.2126729, 0.7151521, 0.0721750, 0, 0, 0, 0, 1]}
 
-    - !<Look>
-        name: Filmic Greyscale
-        process_space: Filmic Log
-        transform: !<MatrixTransform> {matrix: [0.2126729, 0.7151521, 0.0721750, 0, 0.2126729, 0.7151521, 0.0721750, 0, 0.2126729, 0.7151521, 0.0721750, 0, 0, 0, 0, 1]}
+  - !<Look>
+    name: False Colour
+    process_space: Filmic Log
+    transform: !<FileTransform> {src: Filmic_False_Colour.spi3d, interpolation: best}
 
-    - !<Look>
-        name: Filmic Very High Contrast
-        process_space: Filmic Log
-        transform: !<FileTransform> {src: Filmic_to_1.20_1-00.spi1d, interpolation: best}
+  - !<Look>
+    name: Very High Contrast
+    process_space: Filmic Log
+    transform: !<FileTransform> {src: Filmic_to_1.20_1-00.spi1d, interpolation: linear}
 
-    - !<Look>
-        name: Filmic High Contrast
-        process_space: Filmic Log
-        transform: !<FileTransform> {src: Filmic_to_0.99_1-0075.spi1d, interpolation: best}
+  - !<Look>
+    name: High Contrast
+    process_space: Filmic Log
+    transform: !<FileTransform> {src: Filmic_to_0.99_1-0075.spi1d, interpolation: linear}
 
-    - !<Look>
-        name: Filmic Medium High Contrast
-        process_space: Filmic Log
-        transform: !<FileTransform> {src: Filmic_to_0-85_1-011.spi1d, interpolation: best}
+  - !<Look>
+    name: Medium High Contrast
+    process_space: Filmic Log
+    transform: !<FileTransform> {src: Filmic_to_0-85_1-011.spi1d, interpolation: best}
 
-    - !<Look>
-        name: Filmic Base
-        process_space: Filmic Log
-        transform: !<FileTransform> {src: Filmic_to_0-70_1-03.spi1d, interpolation: best}
+  - !<Look>
+    name: Base Contrast
+    process_space: Filmic Log
+    transform: !<FileTransform> {src: Filmic_to_0-70_1-03.spi1d, interpolation: linear}
 
-    - !<Look>
-        name: Filmic Medium Low Contrast
-        process_space: Filmic Log
-        transform: !<FileTransform> {src: Filmic_to_0-60_1-04.spi1d, interpolation: best}
+  - !<Look>
+    name: Medium Low Contrast
+    process_space: Filmic Log
+    transform: !<FileTransform> {src: Filmic_to_0-60_1-04.spi1d, interpolation: linear}
 
-    - !<Look>
-        name: Film Low Contrast
-        process_space: Filmic Log
-        transform: !<FileTransform> {src: Filmic_to_0-48_1-09.spi1d, interpolation: best}
+  - !<Look>
+    name: Low Contrast
+    process_space: Filmic Log
+    transform: !<FileTransform> {src: Filmic_to_0-48_1-09.spi1d, interpolation: linear}
 
-    - !<Look>
-        name: Film Very Low Contrast
-        process_space: Filmic Log
-        transform: !<FileTransform> {src: Filmic_to_0-35_1-30.spi1d, interpolation: best}
+  - !<Look>
+    name: Very Low Contrast
+    process_space: Filmic Log
+    transform: !<FileTransform> {src: Filmic_to_0-35_1-30.spi1d, interpolation: linear}
